@@ -1,6 +1,7 @@
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Net;
+using System.Net.Http;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
@@ -38,6 +39,9 @@ public sealed class ChatClientLanguageModel : BaseOpenAiCompatibleLanguageModel
 {
     /// <summary>About 18–24 seconds of backoff before warmup gives up.</summary>
     private const int WarmupMaxRetries = 6;
+
+    /// <summary>Attempts to get the first streamed token before the turn is failed.</summary>
+    private const int StreamOpenMaxAttempts = 3;
 
     private readonly IChatClient _client;
     private readonly string _endpoint;
@@ -169,21 +173,47 @@ public sealed class ChatClientLanguageModel : BaseOpenAiCompatibleLanguageModel
         // The first update is pulled here rather than inside the iterator so a provider rejection
         // surfaces at this await, where the prompted-tools retry can still rerun the turn before
         // anything has been spoken.
-        bool hasFirst;
-        try
+        for (var attempt = 1; ; attempt++)
         {
-            hasFirst = await updates.MoveNextAsync().ConfigureAwait(false);
-        }
-        catch
-        {
-            await updates.DisposeAsync().ConfigureAwait(false);
-            throw;
-        }
+            bool hasFirst;
+            try
+            {
+                hasFirst = await updates.MoveNextAsync().ConfigureAwait(false);
+            }
+            catch (Exception exception)
+            {
+                await updates.DisposeAsync().ConfigureAwait(false);
 
-        return TranslateStream(updates, hasFirst);
+                // Local servers (model reload, runtime recycle) sometimes drop the stream before the
+                // first token. Nothing has been spoken yet, so reopening is invisible to the caller.
+                // A barge-in in flight is not that: this response is already unwanted.
+                if (attempt >= StreamOpenMaxAttempts
+                    || cancellationToken.IsCancellationRequested
+                    || CancelScope?.Discarding == true
+                    || !IsTransientStreamFailure(exception))
+                {
+                    throw;
+                }
+
+                Logger.LogWarning(
+                    exception,
+                    "{Handler}: stream ended before the first token (attempt {Attempt}); reopening",
+                    Name, attempt);
+
+                await Task.Delay(TimeSpan.FromMilliseconds(200 * attempt), cancellationToken)
+                    .ConfigureAwait(false);
+
+                updates = _client
+                    .GetStreamingResponseAsync(request.Messages, request.Options, cancellationToken)
+                    .GetAsyncEnumerator(cancellationToken);
+                continue;
+            }
+
+            return TranslateStream(updates, hasFirst);
+        }
     }
 
-    private static async IAsyncEnumerable<ProviderEvent> TranslateStream(
+    private async IAsyncEnumerable<ProviderEvent> TranslateStream(
         IAsyncEnumerator<ChatResponseUpdate> updates,
         bool hasFirst)
     {
@@ -193,7 +223,7 @@ public sealed class ChatClientLanguageModel : BaseOpenAiCompatibleLanguageModel
 
         try
         {
-            for (var more = hasFirst; more; more = await updates.MoveNextAsync().ConfigureAwait(false))
+            for (var more = hasFirst; more; more = await AdvanceAsync(updates).ConfigureAwait(false))
             {
                 foreach (var content in updates.Current.Contents)
                 {
@@ -228,6 +258,33 @@ public sealed class ChatClientLanguageModel : BaseOpenAiCompatibleLanguageModel
             yield return completed;
         }
     }
+
+    /// <summary>
+    /// Advances the stream, treating a dropped connection as end-of-stream.
+    /// </summary>
+    /// <remarks>
+    /// Text produced before the drop has already reached TTS and is being spoken. Rethrowing would
+    /// make the base class replace that half-spoken answer with an error notice, which is worse than
+    /// a truncated one. A drop before any token still fails the turn — that is handled at open time.
+    /// </remarks>
+    private async ValueTask<bool> AdvanceAsync(IAsyncEnumerator<ChatResponseUpdate> updates)
+    {
+        try
+        {
+            return await updates.MoveNextAsync().ConfigureAwait(false);
+        }
+        catch (Exception exception) when (IsTransientStreamFailure(exception))
+        {
+            Logger.LogWarning(
+                exception, "{Handler}: stream ended prematurely; completing with partial output", Name);
+            return false;
+        }
+    }
+
+    /// <summary>A transport-level drop, as opposed to the server rejecting the request.</summary>
+    private static bool IsTransientStreamFailure(Exception exception) =>
+        exception is IOException or HttpRequestException
+        || exception.InnerException is IOException or HttpRequestException;
 
     private static List<ProviderEvent> TranslateResponse(ChatResponse response)
     {

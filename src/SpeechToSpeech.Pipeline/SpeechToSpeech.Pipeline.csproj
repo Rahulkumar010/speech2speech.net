@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <AssemblyName>SpeechToSpeech.Pipeline</AssemblyName>
+    <RootNamespace>SpeechToSpeech.Pipeline</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SpeechToSpeech.Core\SpeechToSpeech.Core.csproj" />
+    <ProjectReference Include="..\SpeechToSpeech.Vad\SpeechToSpeech.Vad.csproj" />
+    <ProjectReference Include="..\SpeechToSpeech.Stt\SpeechToSpeech.Stt.csproj" />
+    <ProjectReference Include="..\SpeechToSpeech.Llm\SpeechToSpeech.Llm.csproj" />
+    <ProjectReference Include="..\SpeechToSpeech.Tts\SpeechToSpeech.Tts.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" />
+    <PackageReference Include="NAudio" />
+  </ItemGroup>
+
+</Project>

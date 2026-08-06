@@ -800,6 +800,13 @@ public abstract class BaseOpenAiCompatibleLanguageModel : BaseHandler<GenerateRe
                 // Shutdown, not a timeout: end the response quietly rather than apologising.
                 Logger.LogDebug("LLM request cancelled during shutdown");
             }
+            catch (Exception exception) when (GenerationIsStale(turn.Generation))
+            {
+                // The user barged in and the next turn's request made the server drop this stream.
+                // Nothing of this response is wanted any more, so a failure notice would only talk
+                // over the answer the user actually asked for.
+                Logger.LogDebug(exception, "LLM request failed after being superseded by barge-in");
+            }
             catch (Exception exception)
             {
                 Logger.LogError(exception, "LLM generation failed; ending the current response");
@@ -834,6 +841,11 @@ public abstract class BaseOpenAiCompatibleLanguageModel : BaseHandler<GenerateRe
                         catch (OperationCanceledException)
                         {
                             Logger.LogDebug("LLM streaming cancelled during shutdown");
+                            break;
+                        }
+                        catch (Exception exception) when (GenerationIsStale(turn.Generation))
+                        {
+                            Logger.LogDebug(exception, "LLM stream failed after being superseded by barge-in");
                             break;
                         }
                         catch (Exception exception)

@@ -1,0 +1,65 @@
+{
+  "vad": {
+    "modelPath": "models/silero_vad.onnx",
+    "threshold": 0.6,
+    "sampleRate": 16000,
+    "minSilenceMs": 300,
+    "minSpeechMs": 384,
+    "speechPadMs": 30,
+    "enableRealtimeTranscription": true,
+    "logProbabilities": false
+  },
+  "stt": {
+    "modelPath": "models/whisper",
+    "modelSize": "base",
+    "language": "auto",
+    "finalRevisionSettleSeconds": 0.15
+  },
+  "llm": {
+    "baseUrl": "http://localhost:65466/v1",
+    "apiKeyEnvironmentVariable": "OPENAI_API_KEY",
+    "model": "qwen2.5-1.5b-instruct-openvino-npu:5",
+    "persona": "You are Fable, a calm British assistant with a dry sense of humour.",
+    "systemInstructions": "Answer in under 20 words. Never use lists or markdown.",
+    "userTemplate": null,
+    "stream": true,
+    "streamBatchSentences": 2,
+    "enableLanguagePrompt": true,
+    "requestTimeoutSeconds": 60,
+    "historySize": 10,
+    "temperature": 0.7,
+    "tools": [
+      {
+        "name": "get_weather",
+        "description": "Get the current weather for a city.",
+        "parameters": {
+          "type": "object",
+          "properties": { "city": { "type": "string", "description": "City name" } },
+          "required": ["city"]
+        }
+      }
+    ]
+  },
+  "tts": {
+    "modelPath": "models/kokoro-v1.0.onnx",
+    "voicesPath": "",
+    "voice": "bm_fable",
+    "speed": 1.0,
+    "outputSampleRate": 24000,
+    "languageCode": "b",
+    "blockMilliseconds": 50
+  },
+  "audio": {
+    "inputDeviceNumber": 0,
+    "inputSampleRate": 16000,
+    "frameSamples": 512,
+    "captureBufferMilliseconds": 32,
+    "playbackLatencyMilliseconds": 120,
+    "enableLevelMeter": false
+  },
+  "queues": {
+    "audioCapacity": 512,
+    "outputCapacity": 2048
+  },
+  "enableMetrics": false
+}

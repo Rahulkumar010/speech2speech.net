@@ -1,0 +1,41 @@
+{
+  "vad": {
+    "modelPath": "models/silero_vad.onnx",
+    "threshold": 0.6,
+    "minSilenceMs": 300,
+    "minSpeechMs": 384,
+    "speechPadMs": 30,
+    "enableRealtimeTranscription": true,
+    "logProbabilities": false
+  },
+  "stt": {
+    "modelPath": "models/whisper",
+    "modelSize": "base",
+    "language": "auto",
+    "finalRevisionSettleSeconds": 0.15
+  },
+  "llm": {
+    "baseUrl": "http://localhost:53488/v1",
+    "model": "qwen2.5-1.5b-instruct-openvino-npu:5",
+    "persona": "You are Amy, a calm voice assistant with a dry sense of humour.",
+    "systemInstructions": "Answer in under 20 words. Speak plainly: no lists, no markdown, no emoji.",
+    "userTemplate": null,
+    "streamBatchSentences": 2,
+    "requestTimeoutSeconds": 60,
+    "historySize": 10,
+    "tools": []
+  },
+  "tts": {
+    "modelPath": "models/kokoro-v1.0.onnx",
+    "voice": "bm_fable",
+    "speed": 1.0,
+    "languageCode": "b",
+    "blockMilliseconds": 50
+  },
+  "audio": {
+    "inputDeviceNumber": 0,
+    "playbackLatencyMilliseconds": 120,
+    "enableLevelMeter": true
+  },
+  "enableMetrics": false
+}

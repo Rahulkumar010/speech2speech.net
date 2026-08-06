@@ -1,4 +1,4 @@
-# Speech2Speech C# Documentation
+# Speech2Speech.Net
 
 ## Documentation map
 
@@ -23,7 +23,9 @@ The solution targets .NET 9 and contains five libraries, one interactive sample,
 | `SpeechToSpeech.Stt` | Local Whisper ONNX transcription |
 | `SpeechToSpeech.Llm` | OpenAI-compatible Chat Completions and LLM output routing |
 | `SpeechToSpeech.Tts` | Local Kokoro and OpenAI-compatible speech synthesis |
-| `VoiceLoopDemo` | NAudio microphone-to-speaker demonstration |
+| `SpeechToSpeech.Pipeline` | Config-driven assembly of the full loop, plus an optional microphone/speaker host |
+| `VoiceLoopDemo` | NAudio speech-to-speech demonstration, uses core libraries |
+| `VoicePipelineDemo` | The same loop driven entirely from `voice-pipeline.json` |
 | `SpeechToSpeech.Tests` | xUnit unit and regression tests |
 
 The C# solution is a library and local sample implementation. Types for realtime sessions and transports exist in Core so a host can be built around the pipeline.
@@ -45,6 +47,14 @@ dotnet run --project .\samples\VoiceLoopDemo\VoiceLoopDemo.csproj -- `
 	--llm-url http://127.0.0.1:39839/v1 `
 	--model qwen2.5-1.5b-instruct-openvino-npu:5 `
 	--verbose
+```
+
+The config-driven sample reads `samples/VoicePipelineDemo/voice-pipeline.json`, where models, voice, language, persona, system instructions and every tuning parameter live. Command-line flags override only the settings worth changing between two runs; `--help` lists them.
+
+```powershell
+dotnet run --project .\samples\VoicePipelineDemo\VoicePipelineDemo.csproj -- `
+	--config .\samples\VoicePipelineDemo\voice-pipeline.json `
+	--llm-url http://127.0.0.1:39839/v1
 ```
 
 The documented test profile uses Foundry Local CLI with `qwen2.5-1.5b-instruct-openvino-npu:5` on an Intel NPU. See [Getting started](docs/getting-started.md) before running the sample because it also requires .NET 9, model files, Foundry Local, compatible Intel NPU drivers, and Windows audio input/output.

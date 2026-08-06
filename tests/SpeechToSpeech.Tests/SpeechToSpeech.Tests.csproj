@@ -15,6 +15,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\SpeechToSpeech.Core\SpeechToSpeech.Core.csproj" />
     <ProjectReference Include="..\..\src\SpeechToSpeech.Llm\SpeechToSpeech.Llm.csproj" />
+    <ProjectReference Include="..\..\src\SpeechToSpeech.Pipeline\SpeechToSpeech.Pipeline.csproj" />
     <ProjectReference Include="..\..\src\SpeechToSpeech.Stt\SpeechToSpeech.Stt.csproj" />
     <ProjectReference Include="..\..\src\SpeechToSpeech.Tts\SpeechToSpeech.Tts.csproj" />
   </ItemGroup>
