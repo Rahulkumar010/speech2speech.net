@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # The model blobs are not needed to build or unit test.
+          lfs: false
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+
+      - name: Restore
+        run: dotnet restore SpeechToSpeech.sln
+
+      - name: Build
+        run: dotnet build SpeechToSpeech.sln -c Release --no-restore
+
+      # Style and naming rules are already enforced by the build itself
+      # (EnforceCodeStyleInBuild + TreatWarningsAsErrors), so this only needs to cover whitespace.
+      - name: Verify formatting
+        run: dotnet format SpeechToSpeech.sln whitespace --verify-no-changes --no-restore
+
+      - name: Test
+        run: dotnet test SpeechToSpeech.sln -c Release --no-build
+
+      - name: Check for vulnerable packages
+        run: dotnet list SpeechToSpeech.sln package --vulnerable --include-transitive

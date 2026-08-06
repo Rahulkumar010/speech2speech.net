@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <AssemblyName>SpeechToSpeech.Tts</AssemblyName>
+    <RootNamespace>SpeechToSpeech.Tts</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="KokoroSharp" />
+    <PackageReference Include="Microsoft.ML.OnnxRuntime" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SpeechToSpeech.Core\SpeechToSpeech.Core.csproj" />
+  </ItemGroup>
+
+</Project>

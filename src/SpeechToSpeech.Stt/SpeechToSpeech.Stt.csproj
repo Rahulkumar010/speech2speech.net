@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <AssemblyName>SpeechToSpeech.Stt</AssemblyName>
+    <RootNamespace>SpeechToSpeech.Stt</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Whisper.net" />
+    <PackageReference Include="Whisper.net.Runtime" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SpeechToSpeech.Core\SpeechToSpeech.Core.csproj" />
+  </ItemGroup>
+
+</Project>

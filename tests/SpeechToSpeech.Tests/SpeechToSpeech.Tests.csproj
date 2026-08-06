@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+    <OutputType>Exe</OutputType>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit.v3" />
+    <PackageReference Include="xunit.runner.visualstudio" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\SpeechToSpeech.Core\SpeechToSpeech.Core.csproj" />
+    <ProjectReference Include="..\..\src\SpeechToSpeech.Llm\SpeechToSpeech.Llm.csproj" />
+    <ProjectReference Include="..\..\src\SpeechToSpeech.Stt\SpeechToSpeech.Stt.csproj" />
+    <ProjectReference Include="..\..\src\SpeechToSpeech.Tts\SpeechToSpeech.Tts.csproj" />
+  </ItemGroup>
+
+</Project>
