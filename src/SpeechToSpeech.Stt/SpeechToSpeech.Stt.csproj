@@ -3,6 +3,7 @@
   <PropertyGroup>
     <AssemblyName>SpeechToSpeech.Stt</AssemblyName>
     <RootNamespace>SpeechToSpeech.Stt</RootNamespace>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>

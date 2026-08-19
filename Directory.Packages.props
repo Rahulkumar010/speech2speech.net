@@ -12,6 +12,7 @@
     <PackageVersion Include="OpenAI" Version="2.12.0" />
     <PackageVersion Include="Whisper.net" Version="1.9.1" />
     <PackageVersion Include="Whisper.net.Runtime" Version="1.9.1" />
+    <PackageVersion Include="MinVer" Version="6.0.0" />
   </ItemGroup>
 
   <!-- Test-only -->

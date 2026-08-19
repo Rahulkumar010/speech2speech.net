@@ -1,0 +1,6 @@
+<!-- Empty on purpose: stops inheritance from the repo root so this sample builds like an external consumer. -->
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+</Project>

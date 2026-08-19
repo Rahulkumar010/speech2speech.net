@@ -1,0 +1,53 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <AssemblyName>Speech2Speech</AssemblyName>
+    <RootNamespace>Speech2Speech</RootNamespace>
+    <PackageId>Speech2Speech</PackageId>
+    <IsPackable>true</IsPackable>
+    <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);IncludeReferencedProjectOutputs</TargetsForTfmSpecificBuildOutput>
+    <TargetsForTfmSpecificDebugSymbolsInPackage>$(TargetsForTfmSpecificDebugSymbolsInPackage);IncludeReferencedProjectSymbols</TargetsForTfmSpecificDebugSymbolsInPackage>
+    <IncludeContentInPack>false</IncludeContentInPack>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SpeechToSpeech.Core\SpeechToSpeech.Core.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\SpeechToSpeech.Vad\SpeechToSpeech.Vad.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\SpeechToSpeech.Stt\SpeechToSpeech.Stt.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\SpeechToSpeech.Llm\SpeechToSpeech.Llm.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\SpeechToSpeech.Tts\SpeechToSpeech.Tts.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\SpeechToSpeech.Pipeline\SpeechToSpeech.Pipeline.csproj" PrivateAssets="all" />
+  </ItemGroup>
+
+  <!-- PrivateAssets on the project references stops their PackageReferences reaching the nuspec, so restate them here. -->
+  <ItemGroup>
+    <PackageReference Include="KokoroSharp" />
+    <PackageReference Include="Microsoft.Extensions.AI" />
+    <PackageReference Include="Microsoft.Extensions.AI.OpenAI" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" />
+    <PackageReference Include="Microsoft.ML.OnnxRuntime" />
+    <PackageReference Include="NAudio" />
+    <PackageReference Include="OpenAI" />
+    <PackageReference Include="Whisper.net" />
+    <PackageReference Include="Whisper.net.Runtime" />
+  </ItemGroup>
+
+  <Target Name="IncludeReferencedProjectOutputs" DependsOnTargets="ResolveReferences">
+    <ItemGroup>
+      <_ProjectRefOutput Include="@(ReferenceCopyLocalPaths->WithMetadataValue('ReferenceSourceTarget','ProjectReference'))" />
+      <BuildOutputInPackage Include="@(_ProjectRefOutput)"
+                            Exclude="@(_ProjectRefOutput->WithMetadataValue('Extension','.pdb'))" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="IncludeReferencedProjectSymbols" DependsOnTargets="ResolveReferences">
+    <ItemGroup>
+      <TfmSpecificDebugSymbolsFile Include="@(ReferenceCopyLocalPaths->WithMetadataValue('Extension','.pdb'))"
+                                  Condition="'%(ReferenceCopyLocalPaths.ReferenceSourceTarget)' == 'ProjectReference'"
+                                  TargetPath="/lib/$(TargetFramework)/%(Filename)%(Extension)"
+                                  TargetFramework="$(TargetFramework)" />
+    </ItemGroup>
+  </Target>
+
+</Project>

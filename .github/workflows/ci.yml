@@ -12,7 +12,10 @@ permissions:
 jobs:
   build:
     runs-on: windows-latest
-
+    env:
+      DOTNET_INSTALL_DIR: "${{ github.workspace }}"
+      MSBUILDDISABLENODEREUSE: 1
+      DOTNET_CLI_USE_MSBUILD_SERVER: 0 
     steps:
       - uses: actions/checkout@v4
         with:
@@ -39,3 +42,7 @@ jobs:
 
       - name: Check for vulnerable packages
         run: dotnet list SpeechToSpeech.sln package --vulnerable --include-transitive
+
+      - name: Shut down build servers
+        if: always()
+        run: dotnet build-server shutdown

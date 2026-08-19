@@ -4,13 +4,14 @@
 
 | Guide | Contents |
 | --- | --- |
-| [Getting started](docs/getting-started.md) | Prerequisites, model layout, restore, build, and first validation |
-| [Architecture](docs/architecture.md) | Project boundaries, pipeline flow, messages, events, cancellation, and lifecycle |
-| [Core reference](docs/core-reference.md) | Queues, handlers, conversation state, realtime contracts, and configuration |
-| [LLM reference](docs/llm-reference.md) | Chat Completions, streaming, prompts, output processing, compaction, and tools |
-| [Audio reference](docs/audio-reference.md) | Silero VAD, Whisper STT, Kokoro TTS, remote TTS, formats, and native dependencies |
-| [Voice loop sample](docs/voice-loop-demo.md) | End-to-end microphone sample, options, output, shutdown, and troubleshooting |
-| [Development and testing](docs/development.md) | Solution layout, smoke harness, extension points, conventions, and diagnostics |
+| [Getting started](https://github.com/Rahulkumar010/speech2speech.net/blob/main/docs/getting-started.md) | Prerequisites, model layout, restore, build, and first validation (developer setup) |
+| [UserDemo quick start](https://github.com/Rahulkumar010/speech2speech.net/blob/main/docs/userdemo-quick-start.md) | Install and test the Speech2Speech NuGet package as a consumer, with Whisper.net.Runtime guidance |
+| [Architecture](https://github.com/Rahulkumar010/speech2speech.net/blob/main/docs/architecture.md) | Project boundaries, pipeline flow, messages, events, cancellation, and lifecycle |
+| [Core reference](https://github.com/Rahulkumar010/speech2speech.net/blob/main/docs/core-reference.md) | Queues, handlers, conversation state, realtime contracts, and configuration |
+| [LLM reference](https://github.com/Rahulkumar010/speech2speech.net/blob/main/docs/llm-reference.md) | Chat Completions, streaming, prompts, output processing, compaction, and tools |
+| [Audio reference](https://github.com/Rahulkumar010/speech2speech.net/blob/main/docs/audio-reference.md) | Silero VAD, Whisper STT, Kokoro TTS, remote TTS, formats, and native dependencies |
+| [Voice loop sample](https://github.com/Rahulkumar010/speech2speech.net/blob/main/docs/voice-loop-demo.md) | End-to-end microphone sample, options, output, shutdown, and troubleshooting |
+| [Development and testing](https://github.com/Rahulkumar010/speech2speech.net/blob/main/docs/development.md) | Solution layout, smoke harness, extension points, conventions, and diagnostics |
 
 ## Scope and status
 
@@ -57,4 +58,4 @@ dotnet run --project .\samples\VoicePipelineDemo\VoicePipelineDemo.csproj -- `
 	--llm-url http://127.0.0.1:39839/v1
 ```
 
-The documented test profile uses Foundry Local CLI with `qwen2.5-1.5b-instruct-openvino-npu:5` on an Intel NPU. See [Getting started](docs/getting-started.md) before running the sample because it also requires .NET 9, model files, Foundry Local, compatible Intel NPU drivers, and Windows audio input/output.
+The documented test profile uses Foundry Local CLI with `qwen2.5-1.5b-instruct-openvino-npu:5` on an Intel NPU. See [Getting started](https://github.com/Rahulkumar010/speech2speech.net/blob/main/docs/getting-started.md) before running the sample because it also requires .NET 9, model files, Foundry Local, compatible Intel NPU drivers, and Windows audio input/output.

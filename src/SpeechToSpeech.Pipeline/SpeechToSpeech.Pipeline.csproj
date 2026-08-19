@@ -3,6 +3,7 @@
   <PropertyGroup>
     <AssemblyName>SpeechToSpeech.Pipeline</AssemblyName>
     <RootNamespace>SpeechToSpeech.Pipeline</RootNamespace>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>

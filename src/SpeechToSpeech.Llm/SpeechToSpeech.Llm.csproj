@@ -3,6 +3,7 @@
   <PropertyGroup>
     <AssemblyName>SpeechToSpeech.Llm</AssemblyName>
     <RootNamespace>SpeechToSpeech.Llm</RootNamespace>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>

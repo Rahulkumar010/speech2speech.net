@@ -15,7 +15,7 @@
     "finalRevisionSettleSeconds": 0.15
   },
   "llm": {
-    "baseUrl": "http://localhost:53488/v1",
+    "baseUrl": "http://localhost:58466/v1",
     "model": "qwen2.5-1.5b-instruct-openvino-npu:5",
     "persona": "You are Amy, a calm voice assistant with a dry sense of humour.",
     "systemInstructions": "Answer in under 20 words. Speak plainly: no lists, no markdown, no emoji.",

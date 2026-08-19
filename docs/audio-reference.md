@@ -58,8 +58,34 @@ Relevant `VadOptions` defaults are 16 kHz, threshold `0.6`, 64 ms minimum silenc
 
 Transcription runs whisper.cpp through [Whisper.net](https://github.com/sandrohanea/whisper.net). Feature extraction, tokenization and decoding all live in the native library, so there is no log-mel or GPT-2 byte-level decoding code in this repository.
 
+
 `Whisper.net.Runtime` ships CPU binaries that require AVX/AVX2/FMA/F16C. On older hardware, swap the package for `Whisper.net.Runtime.NoAvx`.
 
+### ⚠️ Critical: Whisper.net.Runtime Dependency
+
+The Speech2Speech NuGet package includes the managed Whisper.net library but **does not** include native runtime binaries. Your consumer application **must** explicitly reference one of:
+
+- `Whisper.net.Runtime` (1.9.1) — CPU-based, requires AVX/AVX2/FMA/F16C
+- `Whisper.net.Runtime.NoAvx` (1.9.1) — CPU, compatible with older processors
+- `Whisper.net.Runtime.Cuda` (1.9.1) — NVIDIA GPU acceleration
+- `Whisper.net.Runtime.CoreML` (1.9.1) — Apple Neural Engine (macOS)
+
+Add to your `.csproj`:
+```xml
+<PackageReference Include="Whisper.net.Runtime" Version="1.9.1" />
+```
+
+Or via `dotnet add`:
+```bash
+dotnet add package Whisper.net.Runtime --version 1.9.1
+```
+
+**Why?** Whisper.net.Runtime delivers its binaries via NuGet build targets (build/Whisper.net.Runtime.targets), which NuGet does not import transitively. Speech2Speech declares Whisper.net as a library reference only; each consumer must pull in the runtime separately based on their hardware (GPU, CPU type, platform).
+
+If you skip this step, you'll encounter:
+```
+FileNotFoundException: Unable to load DLL 'ggml': The specified module could not be found.
+```
 ### `GgmlModelResolver`
 
 [GgmlModelResolver.cs](../src/SpeechToSpeech.Stt/Whisper/GgmlModelResolver.cs) turns the configured path into a ggml `.bin`: an existing file is used as-is, a directory is searched for `*.bin`, and otherwise the requested `GgmlType` is downloaded once to a `.partial` file and moved into place so an interrupted download cannot masquerade as valid weights.

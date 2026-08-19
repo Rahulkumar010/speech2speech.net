@@ -1,0 +1,27 @@
+name: Release
+on:
+  push:
+    tags: ['v*']
+permissions:
+  contents: read
+concurrency: { group: release, cancel-in-progress: false }
+jobs:
+  publish:
+    if: github.repository == 'Rahulkumar010/speech2speech.net'
+    runs-on: windows-latest
+    env:
+      DOTNET_INSTALL_DIR: "${{ github.workspace }}"
+      MSBUILDDISABLENODEREUSE: 1
+      DOTNET_CLI_USE_MSBUILD_SERVER: 0 
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0, lfs: false }   # MinVer needs full history + tags
+      - uses: actions/setup-dotnet@v4
+        with: { global-json-file: global.json }
+      - run: dotnet test SpeechToSpeech.sln -c Release
+      - run: dotnet pack SpeechToSpeech.sln -c Release -o artifacts
+      # - run: dotnet nuget push "artifacts/*.nupkg" --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
+      
+      - name: Shut down build servers
+        if: always()
+        run: dotnet build-server shutdown

@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 using NAudio.Wave;
 using SpeechToSpeech.Core.Pipeline;
 using SpeechToSpeech.Core.Utils;
+using System.Runtime.Versioning;
 
 namespace SpeechToSpeech.Pipeline;
 
@@ -14,6 +15,7 @@ namespace SpeechToSpeech.Pipeline;
 /// Playback owns the listening gate: the microphone is muted while the assistant speaks and re-armed
 /// only once the speaker buffer has actually drained, otherwise the VAD triggers on our own output.
 /// </remarks>
+// [SupportedOSPlatform("windows")]
 public sealed class VoiceLoopHost : IAsyncDisposable
 {
     private readonly ILogger _logger;

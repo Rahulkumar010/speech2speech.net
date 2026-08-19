@@ -1,0 +1,9 @@
+<Project>
+  <!-- _PackageFiles bypasses _GetPackageFiles, which IncludeContentInPack=false disables. -->
+  <Target Name="AddPackageDocs" BeforeTargets="GenerateNuspec" Condition="'$(IsPackable)' == 'true'">
+    <ItemGroup>
+      <_PackageFiles Include="$(MSBuildThisFileDirectory)README.md" PackagePath="README.md" BuildAction="None" />
+      <_PackageFiles Include="$(MSBuildThisFileDirectory)LICENSE" PackagePath="LICENSE" BuildAction="None" />
+    </ItemGroup>
+  </Target>
+</Project>
